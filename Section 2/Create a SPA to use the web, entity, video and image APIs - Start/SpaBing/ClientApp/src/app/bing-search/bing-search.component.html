@@ -1,0 +1,150 @@
+<h1>Bing Search</h1>
+
+<p>This component demonstrates Bing Search via the server.</p>
+
+<div>
+  <form>
+    <div class="form-group">
+      <label for="searchQuery">Query</label>
+      <input class="form-control" id="searchQuery" [(ngModel)]="searchQuery" name="searchQuery">
+    </div>
+    <div class="form-group">
+      <label for="market">Market</label>
+      <select class="form-control" id="market" [(ngModel)]="market" name="market">
+        <option value="es-AR">Argentina (Spanish)</option>
+        <option value="en-AU">Australia (English)</option>
+        <option value="de-AT">Austria (German)</option>
+        <option value="nl-BE">Belgium (Dutch)</option>
+        <option value="fr-BE">Belgium (French)</option>
+        <option value="pt-BR">Brazil (Portuguese)</option>
+        <option value="en-CA">Canada (English)</option>
+        <option value="fr-CA">Canada (French)</option>
+        <option value="es-CL">Chile (Spanish)</option>
+        <option value="da-DK">Denmark (Danish)</option>
+        <option value="fi-FI">Finland (Finnish)</option>
+        <option value="fr-FR">France (French)</option>
+        <option value="de-DE">Germany (German)</option>
+        <option value="zh-HK">Hong Kong (Traditional Chinese)</option>
+        <option value="en-IN">India (English)</option>
+        <option value="en-ID">Indonesia (English)</option>
+        <option value="it-IT">Italy (Italian)</option>
+        <option value="ja-JP">Japan (Japanese)</option>
+        <option value="ko-KR">Korea (Korean)</option>
+        <option value="en-MY">Malaysia (English)</option>
+        <option value="es-MX">Mexico (Spanish)</option>
+        <option value="nl-NL">Netherlands (Dutch)</option>
+        <option value="en-NZ">New Zealand (English)</option>
+        <option value="no-NO">Norway (Norwegian)</option>
+        <option value="zh-CN">People's Republic of China (Chinese)</option>
+        <option value="pl-PL">Poland (Polish)</option>
+        <option value="pt-PT">Portugal (Portuguese)</option>
+        <option value="en-PH">Philippines (English)</option>
+        <option value="ru-RU">Russia (Russian)</option>
+        <option value="ar-SA">Saudi Arabia (Arabic)</option>
+        <option value="en-ZA">South Africa (English)</option>
+        <option value="es-ES">Spain (Spanish)</option>
+        <option value="sv-SE">Sweden (Swedish)</option>
+        <option value="fr-CH">Switzerland (French)</option>
+        <option value="de-CH">Switzerland (German)</option>
+        <option value="zh-TW">Taiwan (Traditional Chinese)</option>
+        <option value="tr-TR">Turkey (Turkish)</option>
+        <option value="en-GB">United Kingdom (English)</option>
+        <option value="en-US" selected>United States (English)</option>
+        <option value="es-US">United States (Spanish)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="freshness">Freshness</label>
+      <select class="form-control" id="freshness" [(ngModel)]="freshness" name="freshness">
+        <option value="" selected>All time</option>
+        <option value="month">Past month</option>
+        <option value="week">Past week</option>
+        <option value="day">Last 24 hours</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <div class="btn-group">
+        <button type="button" class="btn btn-success" (click)="websearch()">Web Search</button>
+        <button type="button" class="btn btn-success" (click)="imagesearch()">Image Search</button>
+        <button type="button" class="btn btn-success" (click)="videosearch()">Video Search</button>
+        <button type="button" class="btn btn-success" (click)="entitysearch()">Entity Search</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!--<p *ngIf="!searchresults"><em>Loading...</em></p>-->
+
+<table class='table' *ngIf="websearchresults">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Snippet</th>
+      <th>Url</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let searchresult of websearchresults">
+      <td>{{ searchresult.name }}</td>
+      <td>{{ searchresult.snippet }}</td>
+      <td><a href="{{ searchresult.displayUrl }}" target="_blank">{{ searchresult.displayUrl }}</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<table class='table' *ngIf="imagesearchresults">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Thumbnail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let searchresult of imagesearchresults">
+      <td>{{ searchresult.name }}</td>
+      <td>
+        <a href="{{ searchresult.hostPageUrl }}" target="_blank">
+          <img src="{{ searchresult.thumbnailUrl }}" />
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class='table' *ngIf="entitysearchresults">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Types</th>
+      <th>Url</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let searchresult of entitysearchresults">
+      <td>{{ searchresult.name }}</td>
+      <td>{{ searchresult.description }}</td>
+      <td>{{ searchresult.types }}</td>
+      <td><a href="{{ searchresult.url }}" target="_blank">{{ searchresult.url }}</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<table class='table' *ngIf="videosearchresults">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <!--<th>Preview</th>-->
+      <th>Thumbnail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let searchresult of videosearchresults">
+      <td>{{ searchresult.name }}</td>
+      <td>{{ searchresult.description }}</td>
+      <!--<td><iframe frameborder="0" width="480" src="{{ searchresult.contentUrl }}" allowfullscreen></iframe></td>-->
+      <td><a href="{{ searchresult.contentUrl }}" target="_blank"><img src="{{ searchresult.thumbnailUrl }}" /></a></td>
+    </tr>
+  </tbody>
+</table>

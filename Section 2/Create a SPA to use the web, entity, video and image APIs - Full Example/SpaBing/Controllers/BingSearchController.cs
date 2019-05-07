@@ -11,7 +11,7 @@ namespace SpaBing.Controllers
     [Route("api/[controller]")]
     public class BingSearchController : Controller
     {
-        private readonly string ApiKey = "ab7fbd0bd7e64fa0bbb53f7e8222a836";
+        private readonly string ApiKey = "<enter your API key here>";
 
         private readonly WebSearchClient webSearchClient;
         private readonly EntitySearchClient entitySearchClient;
