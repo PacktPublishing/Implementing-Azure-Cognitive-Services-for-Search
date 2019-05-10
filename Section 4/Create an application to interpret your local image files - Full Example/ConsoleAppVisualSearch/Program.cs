@@ -41,7 +41,7 @@ namespace ConsoleAppVisualSearch
             //var visualSearchResults = client.Images.VisualSearchMethodAsync(image: stream, market: "en-us", knowledgeRequest: (string)null).Result;
 
             // Or use a request containing a URL:
-            var vsr = GetSearchRequest("https://peterrubiconstorage.blob.core.windows.net/packt/armchair1.png");
+            var vsr = GetSearchRequest("<enter your URL here>");
             var visualSearchResults = client.Images.VisualSearchMethodAsync(market: "en-us", knowledgeRequest: vsr).Result;
 
             // Visual Search results
@@ -56,54 +56,56 @@ namespace ConsoleAppVisualSearch
 
             var listOfDescriptions = new List<string>();
 
-            // Loop through results
-            if (visualSearchResults.Tags.Count > 0)
+            if (!visualSearchResults.Tags.Any())
             {
-                Console.WriteLine($"Found {visualSearchResults.Tags.Count} visual search tag(s)");
-                int i = 0;
+                return;
+            }
 
-                foreach (var tag in visualSearchResults.Tags)
+            // Loop through results
+            Console.WriteLine($"Found {visualSearchResults.Tags.Count} visual search tag(s)");
+            int i = 0;
+
+            foreach (var tag in visualSearchResults.Tags)
+            {
+                if (!string.IsNullOrEmpty(tag.DisplayName))
                 {
-                    if(!string.IsNullOrEmpty(tag.DisplayName))
-                    {
-                        listOfDescriptions.Add(tag.DisplayName);
-                    }
-                    Console.WriteLine($"\n\nTag [{++i}]: Name {tag.Name} Description {tag.Description} DisplayName {tag.DisplayName}");
+                    listOfDescriptions.Add(tag.DisplayName);
+                }
+                Console.WriteLine($"\n\nTag [{++i}]: Name {tag.Name} Description {tag.Description} DisplayName {tag.DisplayName}");
 
-                    Console.WriteLine($"Tag [{i}] action count: {tag.Actions.Count}");
+                Console.WriteLine($"Tag [{i}] action count: {tag.Actions.Count}");
 
-                    if(!tag.Actions.Any())
-                    {
-                        Console.WriteLine("Couldn't find tag actions!");
-                        continue;
-                    }
+                if (!tag.Actions.Any())
+                {
+                    Console.WriteLine("Couldn't find tag actions!");
+                    continue;
+                }
 
-                    foreach (var action in tag.Actions)
+                foreach (var action in tag.Actions)
+                {
+                    Console.WriteLine($"\n-- ActionType {action.ActionType} --");
+                    try
                     {
-                        Console.WriteLine($"\n-- ActionType {action.ActionType} --");
-                        try
+                        // Download all VisualSearch results
+                        if (action.ActionType == "VisualSearch")
                         {
-                            // Download all VisualSearch results
-                            if (action.ActionType == "VisualSearch")
+                            foreach (ImageObject o in (action as ImageModuleAction).Data.Value)
                             {
-                                foreach (ImageObject o in (action as ImageModuleAction).Data.Value)
+                                using (WebClient wc = new WebClient())
                                 {
-                                    using (WebClient wc = new WebClient())
-                                    {
-                                        wc.DownloadFile(new Uri(o.ContentUrl), $"Output\\{action.ActionType}{o.ImageId}.{o.EncodingFormat}");
-                                    }
-                                    Console.WriteLine($"Action: ContentURL: {o.ContentUrl} DisplayName {action.DisplayName}");
+                                    wc.DownloadFile(new Uri(o.ContentUrl), $"Output\\{action.ActionType}{o.ImageId}.{o.EncodingFormat}");
                                 }
+                                Console.WriteLine($"Action: ContentURL: {o.ContentUrl} DisplayName {action.DisplayName}");
                             }
                         }
-                        catch
-                        {
-                            Console.WriteLine($"Action: DisplayName {action.DisplayName} No ImageObject found");
-                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"Action: DisplayName {action.DisplayName} No ImageObject found");
                     }
                 }
-                Console.WriteLine($"\n----------------\nSearch tag descriptions:\n{string.Join(',', listOfDescriptions)}");
             }
+            Console.WriteLine($"\n----------------\nSearch tag descriptions:\n{string.Join(',', listOfDescriptions)}");
         }
     }
 }
