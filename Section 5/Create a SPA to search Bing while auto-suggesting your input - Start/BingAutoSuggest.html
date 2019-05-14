@@ -4,7 +4,7 @@
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <title>Bing News API Demo</title>
+    <title>Bing Autosuggest API Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
@@ -14,24 +14,9 @@
 
 <script>
     // DO NOT USE THIS IN PRODUCTION CODE!!!
-    API_KEY_SEARCH = "<enter your key here>";
-    API_KEY_AUTOSUGGEST = "<enter your key here>";
+    API_KEY_AUTOSUGGEST = "<enter your API key here>";
     // Bing Search API endpoint
-    BING_ENDPOINT = "https://api.cognitive.microsoft.com/bing/v7.0/news";
     BING_AUTOSUGGEST = "https://api.cognitive.microsoft.com/bing/v7.0/Suggestions";
-
-    function renderCard(title, text, url, img) {
-        $("#results").append("<div class=\"col-sm-4\">" +
-                "<div class=\"card\" style=\"width: 18rem; margin:10px;\">" +
-                "    <img src=\"" + img + "\" style=\"height:100px;width:100px;\" class=\"card-img-top\" alt=\"image\">" +
-                "<div class=\"card-body\">" +
-                "<h5 class=\"card-title\">" + title + "</h5>" +
-                "<p class=\"card-text\">" + text + "</p>" +
-                "<a href=\"" + url + "\" target=\"_blank\" class=\"btn btn-primary\">Visit</a>" +
-                "</div>" +
-                "</div>" +
-                "</div>");
-    };
 
     function renderError(text) {
         $("#results").append("<div class=\"col-sm-4\"><div class=\"alert alert-danger\" role=\"alert\">" + text + "</div></div>");
@@ -58,104 +43,20 @@
         });
     }
 
-    function showSearchResults(trending) {
-        // Clear result cards
-        $("#results").html("");
-
-        var query = $("#search").val();
-        var options = getOptions();
-        var request = new XMLHttpRequest();
-        if (query){
-            var queryurl = BING_ENDPOINT + "/search" + "?q=" + encodeURIComponent(query) + "&" + options;
-        }
-        else {
-            var queryurl = BING_ENDPOINT + "?" + options;
-        }
-
-        // open the request
-        try {
-            request.open("GET", queryurl);
-        } 
-        catch (e) {
-            renderError("Bad request (invalid URL)<br />" + queryurl);
-            return false;
-        }
-
-        // add request headers
-        request.setRequestHeader("Ocp-Apim-Subscription-Key", API_KEY_SEARCH);
-        request.setRequestHeader("Accept", "application/json");
-
-        // event handler for successful response
-        request.addEventListener("load", handleResponse);
-
-        // event handler for erorrs
-        request.addEventListener("error", function() {
-            renderError("Error completing request");
-        });
-
-        // event handler for aborted request
-        request.addEventListener("abort", function() {
-            renderError("Request aborted");
-        });
-
-        // send the request
-        request.send();
-        return false;
-    };
-
-    function renderResults(resultObject) {
-        for (var i = 0; i < resultObject.length; i++) {
-            var title = resultObject[i].name;
-            var text = resultObject[i].description;
-            var url = resultObject[i].url;
-            var thumbNail = resultObject[i].image.thumbnail.contentUrl;
-            renderCard(title, text, url, thumbNail);
-        }
+    function bingAutosuggest() {
+        // Todo
     }
-
-    function handleResponse() {
-        var json = this.responseText.trim();
-        var jsobj = {};
-
-        // try to parse JSON results
-        try {
-            if (json.length) {
-                jsobj = JSON.parse(json);
-            }
-        } catch(e) {
-            renderError("Invalid JSON response");
-        }
-
-        // if HTTP response is 200 OK, try to render search results
-        if (this.status === 200) {
-            if (json.length) {
-                if (jsobj._type === "News") {
-                    renderResults(jsobj.value);
-                } 
-                else {
-                    renderError("No search results in JSON response " + jsobj._type);
-                }
-            } else {
-                renderError("Empty response (are you sending too many requests too quickly?)");
-            }
-        }
-        else {
-            // Any other HTTP response is an error
-            renderError("Got error " + this.status + " " + this.statusText);
-        }
-    };
 </script>
 
 <body>
     <div class="container">
-        <h1>Bing News API</h1>
+        <h1>Bing Autosuggest API</h1>
 
         <div>
             <div class="form-group">
-                <label for="search">Search Query</label>
-                <input type="search" class="form-control" id="search" placeholder="Search for news">
+                <label for="search">Test autosuggest</label>
+                <input type="search" class="form-control" id="search" placeholder="Test autosuggest" onkeyup="bingAutosuggest();" autocomplete="off">
             </div>
-            <button type="button" onclick="showSearchResults()" class="btn btn-primary">Submit</button>
         </div>
     </div>
     <div class="container">
