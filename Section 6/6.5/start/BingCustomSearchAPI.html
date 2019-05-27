@@ -15,30 +15,40 @@
 <script>
     // DO NOT USE THIS IN PRODUCTION CODE!!!
     API_KEY = "<enter your API key here>";
+    CUSTOM_CONFIG = "<enter your custom config ID here>";
     // Bing Search API endpoint
     BING_ENDPOINT = "https://api.cognitive.microsoft.com/bingcustomsearch/v7.0/search";
 
-    function renderCard(title, text, url, img) {
-        $("#results").append("<div class=\"col-sm-4\">" +
-                "<div class=\"card\" style=\"width: 18rem; margin:10px;\">" +
-                "    <img src=\"" + img + "\" style=\"height:100px;width:100px;\" class=\"card-img-top\" alt=\"image\">" +
-                "<div class=\"card-body\">" +
-                "<h5 class=\"card-title\">" + title + "</h5>" +
-                "<p class=\"card-text\">" + text + "</p>" +
-                "<a href=\"" + url + "\" target=\"_blank\" class=\"btn btn-primary\">Visit</a>" +
-                "</div>" +
-                "</div>" +
-                "</div>");
-    };
-
-    function showSearchResults() {
-        $("#results").html("");
-        renderCard('Some title', 'Some text description', 'http://www.google.com', 'https://via.placeholder.com/150');
+    function renderList(title, text, url, img) {
+        $("#results").append("<a href=\"" + url + "\" target=\"_blank\" class=\"list-group-item list-group-item-action flex-column align-items-start\">" +
+            "<div class=\"d-flex w-100 justify-content-between\">" +
+                        "<h5 class=\"mb-1\">" + title + "</h5>" +
+                    // "<small>3 days ago</small>" +
+                    "</div>" +
+                    "<p class=\"mb-1\">" + text + "</p>" +
+                    "<img src=\"" + img + "\" class=\"img-fluid\" alt=\"image\">" +
+                    "</a>");
     };
 	
 	function renderError(text) {
         $("#results").append("<div class=\"col-sm-4\"><div class=\"alert alert-danger\" role=\"alert\">" + text + "</div></div>");
     };
+
+    function getOptions() {
+        var options = [];
+        options.push("mkt=" + "en-us");
+        options.push("customconfig=" + CUSTOM_CONFIG);
+        options.push("SafeSearch=" + "strict");
+        return options.join("&");
+    };
+
+    function showSearchResults() {
+        // Clear result cards
+        $("#results").html("");
+
+        renderList('Test', 'Test', 'Test', '')
+    };
+
 </script>
 
 <body>
